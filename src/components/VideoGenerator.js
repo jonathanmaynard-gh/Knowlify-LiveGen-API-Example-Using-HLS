@@ -3,6 +3,7 @@ import websocketService from '../services/websocketService';
 
 const VideoGenerator = ({ onVideoGenerated }) => {
   const [task, setTask] = useState('');
+  const [apiKey, setApiKey] = useState('');
   const [isConnected, setIsConnected] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [status, setStatus] = useState('');
@@ -56,6 +57,11 @@ const VideoGenerator = ({ onVideoGenerated }) => {
       return;
     }
 
+    if (!apiKey.trim()) {
+      setError('Please enter your API key (GENERATE YOUR API KEY IN YOUR ACCOUNT PANEL ON demo.knowlify.net');
+      return;
+    }
+
     if (!isConnected) {
       setError('Not connected to video generation service');
       return;
@@ -66,7 +72,7 @@ const VideoGenerator = ({ onVideoGenerated }) => {
       setError('');
       setStatus('Generating video...');
       
-      websocketService.createVideo(task);
+      websocketService.createVideo(task, apiKey);
     } catch (error) {
       console.error('Error generating video:', error);
       setError('Failed to send video generation request');
@@ -76,6 +82,11 @@ const VideoGenerator = ({ onVideoGenerated }) => {
 
   const handleTaskChange = (e) => {
     setTask(e.target.value);
+    if (error) setError('');
+  };
+
+  const handleApiKeyChange = (e) => {
+    setApiKey(e.target.value);
     if (error) setError('');
   };
 
@@ -102,6 +113,24 @@ const VideoGenerator = ({ onVideoGenerated }) => {
         </div>
       )}
 
+      {/* API Key Input */}
+      <div className="controls">
+        <input
+          type="password"
+          value={apiKey}
+          onChange={handleApiKeyChange}
+          placeholder="Enter your API key"
+          style={{ 
+            width: '100%', 
+            padding: '10px', 
+            marginBottom: '10px', 
+            border: '1px solid #ddd',
+            borderRadius: '4px'
+          }}
+          disabled={isGenerating}
+        />
+      </div>
+
       {/* Task Input */}
       <div className="controls">
         <textarea
@@ -122,7 +151,7 @@ const VideoGenerator = ({ onVideoGenerated }) => {
         
         <button 
           onClick={handleGenerateVideo}
-          disabled={!isConnected || isGenerating || !task.trim()}
+          disabled={!isConnected || isGenerating || !task.trim() || !apiKey.trim()}
           style={{ 
             background: isGenerating ? '#6c757d' : '#007bff',
             cursor: isGenerating ? 'not-allowed' : 'pointer'
@@ -142,6 +171,7 @@ const VideoGenerator = ({ onVideoGenerated }) => {
       <div style={{ marginTop: '15px', fontSize: '14px', color: '#666' }}>
         <strong>How it works:</strong>
         <ul style={{ marginTop: '5px' }}>
+          <li>Enter your API key in the field above</li>
           <li>Enter a description of the video you want to generate</li>
           <li>Click "Generate Video" to send the request</li>
           <li>Wait for our system to process and generate your video</li>

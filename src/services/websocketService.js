@@ -56,13 +56,13 @@ class WebSocketService {
     }
   }
 
-  sendMessage(action, task) {
+  sendMessage(action, task, apiKey) {
     if (!this.isConnected || !this.websocket) {
       throw new Error('WebSocket is not connected');
     }
 
     const payload = {
-      api_key: "put your api key here",
+      api_key: apiKey,
       action: action,
       task: task
     };
@@ -70,8 +70,8 @@ class WebSocketService {
     this.websocket.send(JSON.stringify(payload));
   }
 
-  createVideo(task) {
-    return this.sendMessage('new-create-video', task);
+  createVideo(task, apiKey) {
+    return this.sendMessage('new-create-video', task, apiKey);
   }
 
   onMessage(handler) {
