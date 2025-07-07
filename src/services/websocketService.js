@@ -62,6 +62,7 @@ class WebSocketService {
     }
 
     const payload = {
+      api_key: "put your api key here",
       action: action,
       task: task
     };
