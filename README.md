@@ -45,6 +45,7 @@ wss://50fa8sjxo9.execute-api.us-west-2.amazonaws.com/production
 **Request Format:**
 ```json
 {
+  "api_key": "your api key",
   "action": "new-create-video",
   "task": "a cat walking"
 }
