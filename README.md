@@ -47,7 +47,7 @@ wss://50fa8sjxo9.execute-api.us-west-2.amazonaws.com/production
 {
   "api_key": "your api key",
   "action": "new-create-video",
-  "task": "a cat walking"
+  "task": "teach me how to derivate using power rule"
 }
 ```
 
