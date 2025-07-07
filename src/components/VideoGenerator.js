@@ -107,7 +107,7 @@ const VideoGenerator = ({ onVideoGenerated }) => {
         <textarea
           value={task}
           onChange={handleTaskChange}
-          placeholder="Describe the video you want to generate (e.g., 'a cat walking', 'a sunset over mountains')"
+          placeholder="Describe the video you want to generate (e.g., 'teach me how to derivate using power rule', 'what are the stages of photosynthesis?')"
           rows="3"
           style={{ 
             width: '100%', 
