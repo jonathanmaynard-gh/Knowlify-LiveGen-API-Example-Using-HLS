@@ -5,9 +5,6 @@ const HLSVideoPlayer = ({ videoUrl, onError }) => {
   const videoRef = useRef(null);
   const hlsRef = useRef(null);
   const [isLive, setIsLive] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -27,7 +24,7 @@ const HLSVideoPlayer = ({ videoUrl, onError }) => {
     
     // If it's a regular MP4 file or browser doesn't support HLS, just set the src directly
     if (isMp4 || !isHls || !Hls.isSupported()) {
-      console.log('Using native video player');
+      console.log('Using native video player for Firefox compatibility');
       video.src = videoUrl;
       return;
     }
@@ -111,35 +108,6 @@ const HLSVideoPlayer = ({ videoUrl, onError }) => {
     };
   }, [videoUrl, onError]);
 
-  // Video event handlers
-  const handleLoadedMetadata = () => {
-    const video = videoRef.current;
-    if (video && video.duration) {
-      setDuration(video.duration);
-    }
-  };
-
-  const handlePlay = () => {
-    setIsPlaying(true);
-  };
-
-  const handlePause = () => {
-    setIsPlaying(false);
-  };
-
-  const handleTimeUpdate = () => {
-    const video = videoRef.current;
-    if (video) {
-      setCurrentTime(video.currentTime);
-    }
-  };
-
-  const formatTime = (time) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-  };
-
   return (
     <div className="video-wrapper">
       {isLive && <div className="live-indicator">LIVE</div>}
@@ -149,21 +117,9 @@ const HLSVideoPlayer = ({ videoUrl, onError }) => {
         autoPlay
         playsInline
         style={{ width: '100%', maxHeight: 400, background: '#000' }}
-        onLoadedMetadata={handleLoadedMetadata}
-        onPlay={handlePlay}
-        onPause={handlePause}
-        onTimeUpdate={handleTimeUpdate}
       />
-      <div style={{ marginTop: '10px', fontSize: '14px', color: '#666' }}>
-        {duration > 0 && (
-          <span>
-            {formatTime(currentTime)} / {formatTime(duration)}
-          </span>
-        )}
-        {isLive && <span style={{ marginLeft: '10px', color: 'red' }}>• Live Stream</span>}
-      </div>
     </div>
   );
 };
 
-export default HLSVideoPlayer; 
+export default HLSVideoPlayer;

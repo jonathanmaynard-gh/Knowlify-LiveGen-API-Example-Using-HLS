@@ -17,11 +17,14 @@ export const formatHlsUrl = (url) => {
   
   // URL already has .m3u8 extension - just ensure the query parameters are preserved
   if (url.includes('.m3u8')) {
+    // Make sure URL is properly encoded
     try {
+      // Parse the URL to handle it properly
       const urlObj = new URL(url);
       return urlObj.toString();
     } catch (e) {
       console.error('Error parsing m3u8 URL:', e);
+      // Return as is if URL parsing fails
       return url;
     }
   }
@@ -56,25 +59,32 @@ export const formatHlsUrl = (url) => {
  */
 export const checkHlsSupport = () => {
   try {
-    // Try to import Hls from hls.js
-    const Hls = require('hls.js');
-    
-    // Create a video element to check for native HLS support
-    const videoEl = document.createElement('video');
-    const hasNativeHls = videoEl.canPlayType && 
-                        typeof videoEl.canPlayType === 'function' && 
-                        videoEl.canPlayType('application/vnd.apple.mpegurl') !== '';
-    
-    // Check if hls.js is supported by testing for MSE
-    const hasHlsJs = Hls.isSupported();
-    
-    return {
-      hlsJsSupported: hasHlsJs,
-      nativeHlsSupported: hasNativeHls,
-      isSupported: hasHlsJs || hasNativeHls
-    };
+    // Check if hls.js is available
+    import('hls.js').then(({ default: Hls }) => {
+      // Create a video element to check for native HLS support
+      const videoEl = document.createElement('video');
+      const hasNativeHls = videoEl.canPlayType && 
+                          typeof videoEl.canPlayType === 'function' && 
+                          videoEl.canPlayType('application/vnd.apple.mpegurl') !== '';
+      
+      // Check if hls.js is supported by testing for MSE
+      const hasHlsJs = Hls.isSupported();
+      
+      return {
+        hlsJsSupported: hasHlsJs,
+        nativeHlsSupported: hasNativeHls,
+        isSupported: hasHlsJs || hasNativeHls
+      };
+    }).catch(() => {
+      return {
+        hlsJsSupported: false,
+        nativeHlsSupported: false,
+        isSupported: false
+      };
+    });
   } catch (error) {
     console.error('Error checking HLS support:', error);
+    // Return conservative values if checking fails
     return {
       hlsJsSupported: false,
       nativeHlsSupported: false,
